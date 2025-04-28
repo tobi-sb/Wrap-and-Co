@@ -184,6 +184,49 @@
 		  .success-button:hover {
 		    background-color: #45a049;
 		  }
+		  /* Form input focus styles - Change to green */
+		  .input:focus, .text-area:focus, .w-input:focus, .w-select:focus {
+		    border-color: #4CAF50 !important;
+		    outline-color: #4CAF50 !important;
+		    box-shadow: 0 0 0 1px #4CAF50 !important;
+		  }
+		  
+		  /* Change outline color when clicking on form fields */
+		  input:focus-visible, textarea:focus-visible, select:focus-visible {
+		    outline-color: #4CAF50 !important;
+		  }
+		  
+		  /* Custom border bottom animation */
+		  .input, .text-area, .w-input, .w-select {
+		    position: relative;
+		    transition: all 0.3s ease;
+		  }
+		  
+		  .input:after, .text-area:after, .w-input:after, .w-select:after {
+		    content: '';
+		    position: absolute;
+		    bottom: 0;
+		    left: 0;
+		    width: 0;
+		    height: 2px;
+		    background-color: #4CAF50;
+		    transition: width 0.3s ease;
+		  }
+		  
+		  .input:focus:after, .text-area:focus:after, .w-input:focus:after, .w-select:focus:after {
+		    width: 100%;
+		  }
+		  
+		  /* Apply styles to the textarea */
+		  #Message {
+		    resize: none;
+		    /* Optional: Add some additional styles for appearance */
+		    height: 150px;
+		    padding: 12px 15px;
+		    font-family: inherit;
+		    line-height: 1.5;
+		    text-transform: lowercase; /* Forcer le texte en minuscules */
+		  }
 		</style>
 	</head>
 	<body>
@@ -255,13 +298,7 @@
 												<textarea id="Message" name="message" maxlength="5000" data-name="Message" placeholder="Leave any extra information..." class="text-area w-input"></textarea>
 												<div class="w-embed">
 													<style>
-														/* Apply the styles to the textarea */
-														#Message
-														{
-															resize: none;
-															/* Optional: Add some additional styles for appearance */
-															height: 150px;
-														}
+														/* Styles moved to the head section */
 													</style>
 												</div>
 											</div>
@@ -280,7 +317,7 @@
 											</div>
 											<div class="success-title">Thank You!</div>
 											<div class="success-text">Your message has been sent successfully. We will get back to you soon.</div>
-											<button class="success-button" onclick="window.location.reload()">Send another message</button>
+											<button class="success-button" onclick="location.reload()">Send another message</button>
 										</div>
 									</div>
 									<div class="error-message w-form-fail">
@@ -644,15 +681,32 @@
 					.then(function(response) {
 						console.log('SUCCESS!', response.status, response.text);
 						
-						// Reset the form
-						document.getElementById('contact-form').reset();
+						// Modification: Remplacer complètement le contenu de la carte de contact par le message de succès
+						var contactCardLeft = document.querySelector('.contact-card-left');
+						var successHTML = `
+							<div style="text-align: center; padding: 40px; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin: 0 auto; min-height: 522px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+								<div class="success-checkmark">
+									<div class="check-icon">
+										<span class="icon-line line-tip"></span>
+										<span class="icon-line line-long"></span>
+										<div class="icon-circle"></div>
+										<div class="icon-fix"></div>
+									</div>
+								</div>
+								<div class="success-title" style="color: #4CAF50; font-size: 24px; margin-bottom: 15px;">Thank You!</div>
+								<div class="success-text" style="font-size: 16px; color: #666; margin-bottom: 25px;">Your message has been sent successfully. We will get back to you soon.</div>
+								<button class="success-button" style="background-color: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; transition: background-color 0.3s;" onclick="location.reload()">Send another message</button>
+							</div>
+						`;
 						
-						// Show success message with animation
-						document.querySelector('.form').style.display = 'none';
-						document.querySelector('.w-form-done').style.display = 'block';
+						// Remplacer complètement le contenu
+						contactCardLeft.innerHTML = successHTML;
+						
+						// Assurez-vous que tout est bien visible
+						contactCardLeft.style.display = 'block';
 						
 						// Scroll to the success message
-						document.querySelector('.w-form-done').scrollIntoView({behavior: 'smooth'});
+						contactCardLeft.scrollIntoView({behavior: 'smooth'});
 						
 					}, function(error) {
 						console.log('FAILED...', error);
@@ -660,9 +714,24 @@
 						submitButton.value = 'Schedule an appointment';
 						submitButton.disabled = false;
 						
-						// Show error message
-						document.querySelector('.w-form-fail').style.display = 'block';
-						document.querySelector('.w-form-fail').scrollIntoView({behavior: 'smooth'});
+						// Show error message in a more direct way
+						var contactCardLeft = document.querySelector('.contact-card-left');
+						var errorHTML = `
+							<div style="text-align: center; padding: 40px; background-color: #fff0f0; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin: 0 auto; min-height: 522px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+								<div style="color: #d32f2f; font-size: 24px; margin-bottom: 15px;">Oops!</div>
+								<div style="font-size: 16px; color: #666; margin-bottom: 25px;">Something went wrong while submitting the form. Please try again later.</div>
+								<button style="background-color: #d32f2f; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; transition: background-color 0.3s;" onclick="location.reload()">Try Again</button>
+							</div>
+						`;
+						
+						// Remplacer complètement le contenu
+						contactCardLeft.innerHTML = errorHTML;
+						
+						// Assurez-vous que tout est bien visible
+						contactCardLeft.style.display = 'block';
+						
+						// Scroll to the error message
+						contactCardLeft.scrollIntoView({behavior: 'smooth'});
 					});
 			});
 		</script>
